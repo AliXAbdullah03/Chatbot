@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>KN Express UAE ➝ PH Booking Form</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet"/>
+</head>
+<body class="bg-green-700 min-h-screen py-8 px-4 overflow-auto">
+
+  <!-- ✅ Toast Container -->
+  <div id="toast" class="fixed top-4 left-1/2 transform -translate-x-1/2 bg-green-600 text-white px-6 py-3 rounded-lg shadow-md hidden z-50">
+    ✅ Booking submitted!
+  </div>
+
+  <!-- ✅ Hidden iframe for silent submission -->
+  <iframe name="hidden_iframe" style="display:none;"></iframe>
+
+  <div class="max-w-4xl mx-auto bg-white shadow-lg rounded-lg p-8">
+    <h2 class="text-2xl font-bold text-center text-green-700 mb-6">📦 UAE ➝ PH Booking Form</h2>
+
+    <form 
+      id="bookingForm"
+      action="/chatbot/submit/uae-ph-booking"
+      method="POST"
+      target="hidden_iframe"
+      onsubmit="return handleSubmit();"
+      class="space-y-6"
+    >
+
+      <!-- Sender Details -->
+      <fieldset>
+        <legend class="text-lg font-semibold text-gray-700 mb-2">Sender Details</legend>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <input name="sender_name" placeholder="Full Name" class="input" required />
+          <input name="sender_email" type="email" placeholder="Email Address" class="input" />
+          <input name="sender_address" placeholder="Address" class="input" />
+          <input name="sender_city" placeholder="City" class="input" />
+          <input name="sender_contact1" placeholder="Phone Number 1" class="input" />
+          <input name="sender_contact2" placeholder="Phone Number 2" class="input" />
+        </div>
+      </fieldset>
+
+      <!-- Receiver Details -->
+      <fieldset>
+        <legend class="text-lg font-semibold text-gray-700 mb-2 mt-4">Receiver Details</legend>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <input name="receiver_name" placeholder="Full Name" class="input" />
+          <input name="receiver_email" type="email" placeholder="Email Address" class="input" />
+          <input name="receiver_address" placeholder="Address" class="input" />
+          <input name="receiver_city" placeholder="City" class="input" />
+          <input name="receiver_contact1" placeholder="Phone Number 1" class="input" />
+          <input name="receiver_contact2" placeholder="Phone Number 2" class="input" />
+        </div>
+      </fieldset>
+
+      <!-- Commodities Table -->
+      <fieldset>
+        <legend class="text-lg font-semibold text-gray-700 mb-2 mt-6">Commodities</legend>
+        <div id="commodity-table" class="space-y-4">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <input name="item" placeholder="Item Description" class="input" />
+            <input name="qty" type="number" placeholder="Quantity" class="input" />
+          </div>
+        </div>
+        <button type="button" onclick="addRow()" class="text-green-700 mt-2 underline">+ Add another item</button>
+      </fieldset>
+
+      <div class="text-center">
+        <button id="submitBtn" type="submit" class="mt-6 bg-green-600 text-white px-6 py-2 rounded hover:bg-green-800">
+          Submit
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <style>
+    .input {
+      width: 100%;
+      padding: 0.75rem;
+      border: 1px solid #ccc;
+      border-radius: 0.375rem;
+    }
+  </style>
+
+  <script>
+    function addRow() {
+      const table = document.getElementById("commodity-table");
+      const div = document.createElement("div");
+      div.className = "grid grid-cols-1 md:grid-cols-2 gap-4 mt-2";
+      div.innerHTML = `
+        <input name="item" placeholder="Item Description" class="input" />
+        <input name="qty" type="number" placeholder="Quantity" class="input" />
+      `;
+      table.appendChild(div);
+    }
+
+    function showToast(message = "✅ Booking submitted!") {
+      const toast = document.getElementById("toast");
+      toast.textContent = message;
+      toast.classList.remove("hidden");
+      setTimeout(() => toast.classList.add("hidden"), 2000);
+    }
+
+    function handleSubmit() {
+      showToast();
+
+      // Wait 1s for user to see the toast, then close tab
+      setTimeout(() => {
+        window.close();
+      }, 1000);
+
+      return true; // allow form submission to iframe
+    }
+  </script>
+</body>
+</html>

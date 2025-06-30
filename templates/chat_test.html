@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AYA SALES BOT</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
+  <style>
+    .aya-msg {
+      background-color: #f1f5f9;
+      color: #1e293b;
+      align-self: flex-start;
+    }
+    .user-msg {
+      background-color: #10b981;
+      color: white;
+      align-self: flex-end;
+    }
+    .message {
+      max-width: 75%;
+      padding: 12px;
+      border-radius: 16px;
+      margin: 8px;
+      font-size: 0.95rem;
+      line-height: 1.4;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    body {
+      background: linear-gradient(to bottom right, #f0fdf4, #d1fae5);
+    }
+  </style>
+</head>
+<body class="font-sans min-h-screen flex flex-col items-center justify-end pb-4 px-4 bg-green-50">
+
+  <div class="fixed bottom-4 left-10 w-[420px] max-w-full">
+    <div class="bg-white rounded-2xl shadow-lg flex flex-col overflow-hidden">
+      <div class="bg-gradient-to-r from-blue-500 to-blue-400 text-white px-4 py-3 flex items-center justify-between">
+        <div class="text-sm font-semibold">AYA SALES BOT</div>
+        <div class="text-xs">🟢 We're online!</div>
+      </div>
+
+      <div id="chat-box" class="flex flex-col p-4 space-y-2 overflow-y-auto" style="height: 300px;">
+      </div>
+
+      <div id="typing-indicator" class="message aya-msg self-start hidden">
+        <strong>AYA:</strong> <span class="animate-pulse">Typing...</span>
+      </div>
+
+      <div class="flex items-center border-t px-3 py-2 space-x-2 bg-white">
+        <input id="message" type="text" placeholder="Enter your message..." class="flex-grow px-4 py-2 text-sm border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-400" />
+        
+        <!-- 📷 Upload Image Button -->
+        <label for="image-upload" class="cursor-pointer bg-gray-200 hover:bg-gray-300 px-3 py-2 rounded-full text-xl">
+          📷
+        </label>
+        <input id="image-upload" type="file" accept="image/*" style="display: none;" onchange="uploadImage()" />
+
+        <button onclick="sendMessage()" class="bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold px-4 py-2 rounded-full">Send</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const chatBox = document.getElementById("chat-box");
+    const messageInput = document.getElementById("message");
+
+    // ✅ Generate or reuse a unique sender ID (persisted in localStorage)
+    let sender_id = localStorage.getItem("aya_sender_id");
+    if (!sender_id) {
+      sender_id = "web-" + Math.random().toString(36).substring(2, 12);
+      localStorage.setItem("aya_sender_id", sender_id);
+    }
+
+    async function sendMessage() {
+      const message = messageInput.value.trim();
+      if (!message) return;
+
+      const userMessageDiv = document.createElement("div");
+      userMessageDiv.className = "message user-msg";
+      userMessageDiv.textContent = "You: " + message;
+      chatBox.appendChild(userMessageDiv);
+      chatBox.scrollTop = chatBox.scrollHeight;
+
+      document.getElementById("typing-indicator").classList.remove("hidden");
+
+      try {
+        const response = await fetch("/chatbot/webhook", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ sender_id, message })
+        });
+        const data = await response.json();
+        const reply = data.reply;
+
+        const ayaMessageDiv = document.createElement("div");
+        ayaMessageDiv.className = "message aya-msg";
+        ayaMessageDiv.innerHTML = "AYA: " + reply.replace(/\n/g, "<br>");
+        chatBox.appendChild(ayaMessageDiv);
+
+      } catch (err) {
+        console.error("Message send error:", err);
+      }
+
+      document.getElementById("typing-indicator").classList.add("hidden");
+      messageInput.value = "";
+      chatBox.scrollTop = chatBox.scrollHeight;
+    }
+
+    async function uploadImage() {
+      const fileInput = document.getElementById("image-upload");
+      const file = fileInput.files[0];
+      const message = messageInput.value.trim();  // Optional caption
+      if (!file) return;
+
+      const formData = new FormData();
+      formData.append("sender_id", sender_id);
+      formData.append("image", file);
+      formData.append("message", message);
+
+      const userImageDiv = document.createElement("div");
+      userImageDiv.className = "message user-msg";
+      userImageDiv.innerHTML = `You sent an image:<br><img src="${URL.createObjectURL(file)}" class="rounded mt-1 max-w-[180px]">`;
+      chatBox.appendChild(userImageDiv);
+      chatBox.scrollTop = chatBox.scrollHeight;
+
+      document.getElementById("typing-indicator").classList.remove("hidden");
+
+      try {
+        const response = await fetch("/chatbot/upload-check", {
+          method: "POST",
+          body: formData
+        });
+        const data = await response.json();
+        const reply = data.reply;
+
+        const ayaMessageDiv = document.createElement("div");
+        ayaMessageDiv.className = "message aya-msg";
+        ayaMessageDiv.innerHTML = "AYA: " + reply.replace(/\n/g, "<br>");
+        chatBox.appendChild(ayaMessageDiv);
+
+      } catch (err) {
+        console.error("Upload error:", err);
+      }
+
+      document.getElementById("typing-indicator").classList.add("hidden");
+      fileInput.value = "";
+      messageInput.value = "";
+      chatBox.scrollTop = chatBox.scrollHeight;
+    }
+</script>
+
+</body>
+</html>

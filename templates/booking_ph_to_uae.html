@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>KN Express PH ➝ UAE Booking Form</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet"/>
+</head>
+<body class="bg-green-700 min-h-screen py-8 px-4 overflow-auto">
+
+  <!-- ✅ Toast -->
+  <div id="toast" class="hidden fixed top-4 right-4 bg-green-600 text-white px-4 py-2 rounded shadow-lg z-50"></div>
+
+  <!-- ✅ Hidden iframe for silent form submission -->
+  <iframe name="hidden_iframe" style="display:none;"></iframe>
+
+  <div class="max-w-4xl mx-auto bg-white shadow-lg rounded-lg p-8 relative">
+    <h2 class="text-2xl font-bold text-center text-green-700 mb-6">📦 PH ➝ UAE Booking Form</h2>
+
+    <form
+      action="/chatbot/submit/ph-uae-booking"
+      method="POST"
+      target="hidden_iframe"
+      class="space-y-6"
+      id="booking-form"
+      onsubmit="return handleSubmit();"
+    >
+
+      <!-- Sender Details -->
+      <fieldset>
+        <legend class="font-semibold">Sender Details</legend>
+        <input name="sender_name" placeholder="Name" class="input" required />
+        <input name="sender_contact" placeholder="Phone Number" class="input" />
+        <input name="sender_address" placeholder="Address" class="input" />
+      </fieldset>
+
+      <!-- Receiver Details -->
+      <fieldset>
+        <legend class="font-semibold">Receiver Details</legend>
+        <input name="receiver_name" placeholder="Name" class="input" />
+        <input name="receiver_contact" placeholder="Phone Number" class="input" />
+        <input name="receiver_address" placeholder="Address" class="input" />
+      </fieldset>
+
+      <!-- Items -->
+      <fieldset>
+        <legend class="font-semibold">Items</legend>
+        <div id="item-list">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <input name="item_name" placeholder="Item Description" class="input" />
+            <input name="item_quantity" type="number" min="1" placeholder="Quantity" class="input" />
+          </div>
+        </div>
+        <button type="button" onclick="addItem()" class="text-green-700 mt-2 underline">+ Add another item</button>
+      </fieldset>
+
+      <!-- Additional Info -->
+      <fieldset>
+        <legend class="font-semibold">Additional Information</legend>
+        <input name="total_weight" type="number" step="0.1" placeholder="Total Weight (kg)" class="input" />
+        <input name="number_of_boxes" placeholder="Number of Plastics/Boxes" class="input" />
+        <textarea name="special_notes" placeholder="Special Instructions" rows="3" class="input"></textarea>
+      </fieldset>
+
+      <div class="text-center">
+        <button type="submit" id="submit-btn" class="mt-6 bg-green-600 text-white px-6 py-2 rounded hover:bg-green-800">Submit</button>
+        <p id="loading-text" class="text-sm text-gray-500 mt-2 hidden">Submitting your booking...</p>
+      </div>
+    </form>
+  </div>
+
+  <style>
+    .input {
+      width: 100%;
+      padding: 0.75rem;
+      border: 1px solid #ccc;
+      border-radius: 0.375rem;
+    }
+  </style>
+
+  <script>
+    function addItem() {
+      const itemList = document.getElementById("item-list");
+      const div = document.createElement("div");
+      div.className = "grid grid-cols-1 md:grid-cols-2 gap-4 mt-2";
+      div.innerHTML = `
+        <input name="item_name" placeholder="Item Description" class="input" />
+        <input name="item_quantity" type="number" min="1" placeholder="Quantity" class="input" />
+      `;
+      itemList.appendChild(div);
+    }
+
+    function showToast(msg) {
+      const toast = document.getElementById("toast");
+      toast.innerText = msg;
+      toast.classList.remove("hidden");
+      setTimeout(() => toast.classList.add("hidden"), 3000);
+    }
+
+    function handleSubmit() {
+      showToast("✅ Booking submitted!");
+      document.getElementById("submit-btn").disabled = true;
+      document.getElementById("loading-text").classList.remove("hidden");
+
+      return true; // Form submits silently via iframe
+    }
+  </script>
+</body>
+</html>
+  

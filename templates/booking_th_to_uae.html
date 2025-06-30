@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>KN Express TH ➝ UAE Booking Form</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet"/>
+</head>
+<body class="bg-green-700 min-h-screen py-8 px-4 overflow-auto">
+
+  <!-- ✅ Toast -->
+  <div id="toast" class="hidden fixed top-6 right-6 bg-green-600 text-white px-4 py-2 rounded shadow z-50 transition-opacity duration-500">
+    ✅ Booking submitted!
+  </div>
+
+  <!-- ✅ Hidden iframe for silent form post -->
+  <iframe name="hidden_iframe" style="display: none;"></iframe>
+
+  <div class="max-w-4xl mx-auto bg-white shadow-lg rounded-lg p-8 relative">
+    <h2 class="text-2xl font-bold text-center text-green-700 mb-6">📦 TH ➝ UAE Booking Form</h2>
+
+    <form
+      id="booking-form"
+      class="space-y-6"
+      action="/chatbot/submit/th-uae-booking"
+      method="POST"
+      target="hidden_iframe"
+      onsubmit="return handleSubmit();"
+    >
+
+      <!-- Supplier Details -->
+      <fieldset>
+        <legend class="text-lg font-semibold text-gray-700 mb-2">Supplier or Location Details</legend>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <input name="supplier_name" placeholder="Name" class="input" required />
+          <input name="supplier_contact" placeholder="Contact Information" class="input" />
+          <input name="supplier_address" placeholder="Complete Address" class="input col-span-2" />
+        </div>
+      </fieldset>
+
+      <!-- Items List -->
+      <fieldset>
+        <legend class="text-lg font-semibold text-gray-700 mb-2 mt-4">Items List</legend>
+        <div id="item-list" class="space-y-4">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 item-row">
+            <input name="item_name" placeholder="Item Description" class="input" />
+            <input name="item_quantity" type="number" step="1" placeholder="Quantity" class="input" />
+          </div>
+        </div>
+        <button type="button" onclick="addItem()" class="text-green-700 mt-2 underline">+ Add another item</button>
+      </fieldset>
+
+      <!-- Packaging Info -->
+      <fieldset>
+        <legend class="text-lg font-semibold text-gray-700 mb-2 mt-4">Packaging Info</legend>
+        <input name="number_of_boxes" placeholder="Number of Plastics/Boxes" class="input" />
+      </fieldset>
+
+      <!-- Client Details -->
+      <fieldset>
+        <legend class="text-lg font-semibold text-gray-700 mb-2 mt-4">Client Details</legend>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <input name="client_name" placeholder="Name" class="input" />
+          <input name="client_contact" placeholder="Contact Information" class="input" />
+          <input name="client_email" type="email" placeholder="Email Address" class="input col-span-2" />
+        </div>
+      </fieldset>
+
+      <!-- Special Instructions -->
+      <fieldset>
+        <legend class="text-lg font-semibold text-gray-700 mb-2 mt-4">Special Instructions</legend>
+        <textarea name="special_notes" placeholder="Notes/Instructions" rows="3" class="input w-full"></textarea>
+      </fieldset>
+
+      <!-- Submit Button -->
+      <div class="text-center">
+        <button type="submit" class="mt-6 bg-green-600 text-white px-6 py-2 rounded hover:bg-green-800">
+          Submit
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <style>
+    .input {
+      width: 100%;
+      padding: 0.75rem;
+      border: 1px solid #ccc;
+      border-radius: 0.375rem;
+    }
+  </style>
+
+  <script>
+    function showToast(message = "✅ Booking submitted!") {
+      const toast = document.getElementById("toast");
+      toast.textContent = message;
+      toast.classList.remove("hidden");
+      setTimeout(() => {
+        toast.classList.add("hidden");
+      }, 2000);
+    }
+
+    function handleSubmit() {
+      showToast("✅ Booking submitted!");
+      setTimeout(() => {
+        window.close(); // Close tab if opened from Messenger WebView
+      }, 1000);
+      return true;
+    }
+
+    function addItem() {
+      const itemList = document.getElementById("item-list");
+      const div = document.createElement("div");
+      div.className = "grid grid-cols-1 md:grid-cols-2 gap-4 item-row mt-2";
+      div.innerHTML = `
+        <input name="item_name" placeholder="Item Description" class="input" />
+        <input name="item_quantity" type="number" step="1" placeholder="Quantity" class="input" />
+      `;
+      itemList.appendChild(div);
+    }
+  </script>
+</body>
+</html>

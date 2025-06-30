@@ -1,0 +1,26 @@
+[
+  {
+    "timestamp": "2025-06-26T05:54:21.076584",
+    "sender_id": "test-user",
+    "user_message": "May supplier po kayo gusto ko sana magbusiness",
+    "aya_response": "For trusted supplier assistance po sa Pilipinas or UAE, you may contact Mr. Yong at +971 56 864 3473. He can help you find a reliable and cheaper supplier."
+  },
+  {
+    "timestamp": "2025-06-26T05:54:22.303803",
+    "sender_id": "test-user",
+    "user_message": "May supplier po kayo gusto ko sana magbusiness",
+    "aya_response": "For trusted supplier assistance po sa Pilipinas or UAE, you may contact Mr. Yong at +971 56 864 3473. He can help you find a reliable and cheaper supplier."
+  },
+  {
+    "timestamp": "2025-06-26T08:44:25.201824",
+    "sender_id": "test-user",
+    "user_message": "Okay po. Pickupin nyo po sa supplier no",
+    "aya_response": "Sure po, our customer service team will coordinate directly with your supplier. Once the items are ready, we can pick them up directly or you can drop them off sa warehouse natin sa Bangkok."
+  },
+  {
+    "timestamp": "2025-06-26T08:44:26.394761",
+    "sender_id": "test-user",
+    "user_message": "Okay po. Pickupin nyo po sa supplier no",
+    "aya_response": "Sure po, our customer service team will coordinate directly with your supplier. Once the items are ready, we can arrange the pickup."
+  }
+]
